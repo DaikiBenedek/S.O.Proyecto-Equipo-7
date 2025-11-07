@@ -13,7 +13,7 @@
 ---
 
 ## 📘 Opción de Proyecto Elegida
-**2. Simulación de 3–4 algoritmos de administración de recursos**
+**2. Simulación de 4 algoritmos de administración de recursos**
 
 El proyecto consiste en desarrollar un simulador que permita analizar el comportamiento de diferentes algoritmos de administración de recursos del sistema operativo, considerando métricas cuantitativas y cualitativas bajo distintos escenarios de carga.
 
@@ -31,7 +31,7 @@ El proyecto consiste en desarrollar un simulador que permita analizar el comport
 En los sistemas operativos, la administración de recursos es fundamental para garantizar un uso eficiente del hardware disponible.  
 Entre estos recursos se incluyen **memoria, CPU, almacenamiento y dispositivos de entrada/salida (I/O)**.
 
-En este proyecto se elegirá **un tipo de recurso** (por ejemplo, *memoria*) y se simularán **al menos tres algoritmos diferentes** de administración asociados a dicho recurso.  
+En este proyecto se elegirá **un tipo de recurso** (por ejemplo, *memoria*) y se simularán **cuatro algoritmos diferentes** de administración asociados a dicho recurso.  
 El simulador permitirá observar, comparar y analizar el rendimiento de cada algoritmo en diferentes condiciones de carga.
 
 ---
@@ -43,7 +43,7 @@ Diseñar e implementar un simulador en Python que reproduzca el comportamiento d
 
 ### Objetivos Específicos
 - Comprender el funcionamiento interno de los algoritmos de administración de recursos.  
-- Simular y analizar **al menos tres algoritmos**, por ejemplo:  
+- Simular y analizar **cuatro algoritmos**, por ejemplo:  
   - **Memoria:** FIFO, LRU, OPTIMAL
   - **Planificación de CPU:** FIFO, RR, SJF
 - Evaluar los algoritmos mediante métricas **cuantitativas** y **cualitativas**.  
