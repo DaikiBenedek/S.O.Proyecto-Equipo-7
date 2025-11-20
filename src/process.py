@@ -1,3 +1,5 @@
+from math import inf as infinity
+
 class Process:
 
     def __init__(self, id, arrival_time, burst_time, priority=None):
@@ -6,10 +8,16 @@ class Process:
         self.burst_time = burst_time # total processing time needed
         self.remaining_time = burst_time # remaining processing time needed
         self.priority = priority # process priority, not used by all scheduling algorithms
-        self.turnaround_time = None # 
-        self.waiting_time = None
-        self.completion_time = None
-        self.response_time = None
+        self.turnaround_time = infinity 
+        self.waiting_time = infinity
+        self.completion_time = infinity
+        self.response_time = infinity
+
+    """
+    Reports whether this process is finished
+    """
+    def is_finished(self):
+        return self.remaining_time == 0
 
     """
     Waiting time: metric that tells process' duration in ready queue before 

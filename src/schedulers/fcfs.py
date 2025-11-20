@@ -15,7 +15,7 @@ class FCFS(Scheduler):
         self.ready_queue = deque()
         self.current_process = None
         if processes:
-            self.ready_queue = deque(sorted(processes, key=lambda x: x.arrival_time))
+            self.ready_queue = deque(sorted(processes, key=lambda p: p.arrival_time))
 
     """
     We'll assume the arrival time is greater than the previous ones.
@@ -43,3 +43,5 @@ class FCFS(Scheduler):
         finally:
             return self.current_process
     
+    def get_name(self):
+        return "First Come, First Served"

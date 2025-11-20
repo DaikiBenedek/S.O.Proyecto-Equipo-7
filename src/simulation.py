@@ -1,3 +1,5 @@
+from metrics import Metrics
+
 """
 Class that runs a simulation, takes a list of processes and a scheduling 
 algorithm and simulates an execution of a CPU scheduling
@@ -10,7 +12,7 @@ class Simulation:
         self.scheduler = scheduler # chosen cpu scheduler algorithm
         self.processes = processes # list of processes, can be user-given or empty
         self.generate_processes = True if processes is [] else False
-        self.gantt_data = [] # Data for a Gantt table, which process ran at which time 
+        self.reporter = Metrics(self.scheduler.get_name())
 
     """
     Generates a list of random processes if a list is not provided by the user
@@ -20,6 +22,9 @@ class Simulation:
     def generate_processes(self, number_of_processes, desired_runtime):
         # TODO: implement
         print("hola")
+
+    def increment_tick(self):
+        self.current_tick += 1
 
     """
     Runs one tick of the simulation, the current process is given one tick of processing time 
@@ -32,6 +37,10 @@ class Simulation:
             current_process.set_remaining_time(1, self.current_tick) # processing current
             print(f"Process with ID {current_process.pid} processed during tick {self.current_tick}")
             # TODO update metrics
+            self.reporter.add_to_processes(current_process)
+            self.reporter.increase_counter_time()
+            self.reporter.compute_metrics()
+            self.increment_tick()
             return True
         return False
 
@@ -42,3 +51,4 @@ class Simulation:
         processes_remain = True
         while processes_remain:
             processes_remain = self.tick()
+        print(self.reporter)

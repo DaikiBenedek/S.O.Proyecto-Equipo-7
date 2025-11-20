@@ -36,3 +36,6 @@ class SJF(Scheduler):
             return None
         # Si no ha terminado, lo regresamos como el proceso actual
         return self.current_process
+
+    def get_name(self):
+        return "Shortest Job First"

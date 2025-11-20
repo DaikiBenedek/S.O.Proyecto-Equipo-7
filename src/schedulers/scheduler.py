@@ -13,5 +13,10 @@ class Scheduler(ABC):
     def choose_process(self):
         pass
 
-    def add_to_list(self, process):
+    @abstractmethod
+    def add_to_queue(self, process):
+        pass
+
+    @abstractmethod
+    def get_name(self):
         pass
