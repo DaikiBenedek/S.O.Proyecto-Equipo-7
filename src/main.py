@@ -46,7 +46,7 @@ def choose_user_processes():
     # Lee la decisión del usuario: s/n
     choice = input().strip().lower()
     # Cuando el usuario quiere procesos aleatorios
-    if choice == 'n':
+    if choice == 's':
         try:
             # Se solicitan parámetros de generación
             n = int(input("Número de procesos (ej. 6): ").strip())
@@ -108,6 +108,17 @@ def main():
         lambda: RoundRobin(quantum=quantum)  
     ]
 
+    switching_cost = 2
+    print(f"\nCosto de cambiar contexto (valor por defecto = {switching_cost}). ¿Deseas cambiarlo? (s/n)")
+    # Si el usuario quiere modificar el costo de cambiar contexto
+    if input().strip().lower() == 's':
+        try:
+            # Lee nuevo costo
+            switching_cost = int(input("Introduce costo de cambio de contexto (ticks): ").strip())
+        except:
+            # Maneja error y conserva el valor actual
+            print("Valor inválido, se mantiene costo de cambio de contexto = ", switching_cost)
+
     verbose = False
     print(f"\n¿Quieres que la simulación te indique qué hace en cada tick? (s/n)")
     if input().strip().lower() == 's':
@@ -126,7 +137,7 @@ def main():
         # 2. Instanciar el scheduler
         scheduler = SchedulerClass()
         # 3. Instanciar simulación, crea una simulación con el scheduler dado y procesos
-        sim = Simulation(scheduler, procs, verbose)
+        sim = Simulation(scheduler, procs, switching_cost, verbose)
         
         # 4. Correr la simulación
         sim.simulate()

@@ -1,7 +1,7 @@
 from metrics import Metrics
 
 class Simulation:
-    def __init__(self, scheduler, processes=[], verbose=True):
+    def __init__(self, scheduler, processes=[], switching_cost=2, verbose=True):
         # Reloj global de la simulación, inicia en 0
         self.current_tick = 0 
         # Scheduler seleccionado (FCFS, SJF, SRJF o RR)
@@ -10,6 +10,11 @@ class Simulation:
         # 1. Guardamos los procesos "futuros" ordenados por llegada
         # Usamos list(...) para crear una copia y no afectar la lista original
         self.incoming_processes = sorted(list(processes), key=lambda p: p.arrival_time)
+
+        # Cuantos tiempos cuesta cambiar el contexto del proceso
+        self.switching_cost = switching_cost
+        # Ultimo proceso que se ejecuto, util para saber cuando se hace context switching
+        self.previous_process = None
         
         # Indica si queremos que la simulacion imprima lo que esta haciendo en cada tick
         self.verbose = verbose
@@ -25,7 +30,8 @@ class Simulation:
     def increment_tick(self):
         self.current_tick += 1
 
-    def tick(self):
+    # Rutina de recibir llegada de procesos
+    def receive_processes(self):
         # 2. FASE DE LLEGADA: Mover procesos de "incoming" a "ready" (Scheduler)
         # Mientras haya procesos y el primero de la lista llegue AHORA:
         while self.incoming_processes and self.incoming_processes[0].arrival_time == self.current_tick:
@@ -36,10 +42,29 @@ class Simulation:
             
             print(f"[Tick {self.current_tick}] Process ID {process_arriving.pid} arrived.")
 
+    def tick(self):
+        # Recibimos procesos al inicio de cada tick
+        self.receive_processes()
+
         # 3. FASE DE EJECUCIÓN: El Scheduler elige quién corre
         current_process = self.scheduler.choose_process()   # Puede devolver un proceso o None (CPU Idle) 
 
         if current_process:
+            # Si se cambio de contexto tenemos que simular overhead
+            if self.previous_process is None or self.previous_process.pid != current_process.pid:
+                # Simulamos ticks vacios 
+                for _ in range(self.switching_cost):
+                    if self.verbose:
+                        print(f"[Tick {self.current_tick}] Switching Context")
+                    # CPU inactiva debido a context switching 
+                    self.reporter.increase_counter_time(used_cpu=False)
+                    # Registrar tick Vacio (se representa como None)
+                    self.reporter.log_execution(None)
+                    # Actualizamos las metricas para este tick
+                    self.reporter.compute_metrics()
+                    # Aqui tambien incrementamos el contador de ticks y recibimos nuevos procesos
+                    self.increment_tick()
+                    self.receive_processes()
             # Ejecutamos 1 tick del proceso (reduce remaining_time en 1)
             current_process.set_remaining_time(1, self.current_tick) 
             if self.verbose:
@@ -68,6 +93,9 @@ class Simulation:
         self.reporter.compute_metrics()
         # Avanzar el reloj después de terminar el tick
         self.increment_tick()
+
+        # Antes de pasar al siguiente tick actualizamos el tick anterior 
+        self.previous_process = current_process
 
         # Retornamos True si todavía hay trabajo pendiente (procesos llegando o en cola)
         return True 
