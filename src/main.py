@@ -108,6 +108,14 @@ def main():
         lambda: RoundRobin(quantum=quantum)  
     ]
 
+    verbose = False
+    print(f"\n¿Quieres que la simulación te indique qué hace en cada tick? (s/n)")
+    if input().strip().lower() == 's':
+        try:
+            verbose = True
+        except: 
+            # Si no tenemos un input válido asumimos que no 
+            print("Valor inválido, la simulación no dirá qué hace en cada tick")
 
     print("=== INICIANDO VALIDACIÓN CRUZADA ===")
 
@@ -118,7 +126,7 @@ def main():
         # 2. Instanciar el scheduler
         scheduler = SchedulerClass()
         # 3. Instanciar simulación, crea una simulación con el scheduler dado y procesos
-        sim = Simulation(scheduler, procs)
+        sim = Simulation(scheduler, procs, verbose)
         
         # 4. Correr la simulación
         sim.simulate()

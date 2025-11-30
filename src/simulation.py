@@ -1,7 +1,7 @@
 from metrics import Metrics
 
 class Simulation:
-    def __init__(self, scheduler, processes=[]):
+    def __init__(self, scheduler, processes=[], verbose=True):
         # Reloj global de la simulación, inicia en 0
         self.current_tick = 0 
         # Scheduler seleccionado (FCFS, SJF, SRJF o RR)
@@ -11,6 +11,9 @@ class Simulation:
         # Usamos list(...) para crear una copia y no afectar la lista original
         self.incoming_processes = sorted(list(processes), key=lambda p: p.arrival_time)
         
+        # Indica si queremos que la simulacion imprima lo que esta haciendo en cada tick
+        self.verbose = verbose
+
         # Creamos un objeto Metrics asociado a este algoritmo
         self.reporter = Metrics(self.scheduler.get_name())
         # Registramos todos los procesos en el reportero desde el inicio (aunque aún no lleguen)
@@ -30,6 +33,7 @@ class Simulation:
             process_arriving = self.incoming_processes.pop(0)
             # Lo pasa a la cola de listos del scheduler
             self.scheduler.add_to_queue(process_arriving)
+            
             print(f"[Tick {self.current_tick}] Process ID {process_arriving.pid} arrived.")
 
         # 3. FASE DE EJECUCIÓN: El Scheduler elige quién corre
@@ -38,7 +42,8 @@ class Simulation:
         if current_process:
             # Ejecutamos 1 tick del proceso (reduce remaining_time en 1)
             current_process.set_remaining_time(1, self.current_tick) 
-            print(f"Process ID {current_process.pid} running at tick {self.current_tick}")
+            if self.verbose:
+                print(f"Process ID {current_process.pid} running at tick {self.current_tick}")
             
             # NECESARIO PARA ROUND ROBIN
             #  Verifica si el scheduler tiene el método especial on_tick_executed()
@@ -52,7 +57,8 @@ class Simulation:
             self.reporter.log_execution(current_process.pid)
         else:
             # CPU Ocioso (Idle)
-            print(f"[Tick {self.current_tick}] CPU Idle")
+            if self.verbose:
+                print(f"[Tick {self.current_tick}] CPU Idle")
             # CPU estuvo inactiva este tick
             self.reporter.increase_counter_time(used_cpu=False)
             # Registrar tick Idle (se representa como None)
