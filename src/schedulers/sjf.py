@@ -9,9 +9,7 @@ class SJF(Scheduler):
         self.ready_queue.append(new_process)
 
     def choose_process(self):
-        # --- LÓGICA NO APROPIATIVA ---
-        # Si hay un proceso corriendo y NO ha terminado, SIGUE corriendo.
-        # No importa si llegó alguien más corto.
+        # Si hay un proceso corriendo y NO ha terminado, sigue corriendo, no importa si llegó alguno más corto.
         if self.current_process and not self.current_process.is_finished():
             return self.current_process
 
@@ -26,9 +24,8 @@ class SJF(Scheduler):
         if not self.ready_queue:
             return None
 
-        # 3. Elegimos el proceso con menor BURST TIME original
-        # Nota: En SJF clásico se usa el burst total, no el remaining.
-        # Desempate por llegada.
+        # 3. Elegimos el proceso con menor burst time.
+        # El desempate por se hace por quien llegó primero.
         best_candidate = min(
             self.ready_queue, 
             key=lambda p: (p.burst_time, p.arrival_time)
