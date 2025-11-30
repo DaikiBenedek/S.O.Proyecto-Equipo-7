@@ -122,7 +122,7 @@ def main():
     # Itera sobre cada algoritmo
     for SchedulerClass in schedulers_to_test:
         # 1. Instanciar datos limpios de los procesos
-        procs = processes
+        procs = [Process(p.pid, p.arrival_time, p.burst_time, p.priority) for p in processes]
         # 2. Instanciar el scheduler
         scheduler = SchedulerClass()
         # 3. Instanciar simulación, crea una simulación con el scheduler dado y procesos
